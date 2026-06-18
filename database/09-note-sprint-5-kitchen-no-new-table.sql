@@ -1,0 +1,30 @@
+-- =============================================================================
+-- Sprint 5: Bếp xử lý món — SQL Note
+-- =============================================================================
+-- Ngày: 2026-06-16
+-- Phạm vi: Kitchen Display System (KDS)
+--
+-- QUAN TRỌNG: Sprint 5 KHÔNG tạo bảng mới.
+-- Sprint 5 dùng lại bảng order_items với trạng thái status hiện có.
+--
+-- Trạng thái món bếp xử lý nằm ở order_items.status:
+--   CHO_CHE_BIEN → DANG_CHE_BIEN → HOAN_THANH → DA_PHUC_VU
+--        ↓
+--      DA_HUY
+--
+-- Order status liên quan:
+--   DANG_CHUAN_BI → DANG_PHUC_VU → HOAN_THANH
+--
+-- Quy tắc:
+--   - Bếp chỉ thấy order_items thuộc order chưa DA_HUY và chưa DA_THANH_TOAN
+--   - Bếp không xử lý item DA_HUY
+--   - Bếp cập nhật: CHO_CHE_BIEN → DANG_CHE_BIEN, DANG_CHE_BIEN → HOAN_THANH
+--   - Khi tất cả order_items không bị hủy đều HOAN_THANH hoặc DA_PHUC_VU:
+--     order có thể chuyển DANG_PHUC_VU hoặc HOAN_THANH
+--   - Không động tới invoice/payment
+--
+-- Không có migration mới cho Sprint 5.
+-- =============================================================================
+
+-- Placeholder để MySQL không báo lỗi khi import file này
+SELECT 'Sprint 5: No new tables needed — order_items.status is sufficient' AS info;

@@ -1,0 +1,41 @@
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+temp/
+*.tmp
+*.bak
+*.old
+*.orig
+debug*
+test-output*
+*.tar.gz
+
+# OpenCode and tooling
+.opencode/
+.agents/
+_bmad/
+{output_folder}/
