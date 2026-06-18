@@ -14,6 +14,7 @@ import { KitchenPage } from '../pages/KitchenPage';
 import { ReservationsPage } from '../pages/ReservationsPage';
 import { RevenueReportPage } from '../pages/RevenueReportPage';
 import InventoryPage from '../pages/InventoryPage';
+import StaffUsersPage from '../pages/StaffUsersPage';
 import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { MainLayout } from '../layouts/MainLayout';
 
@@ -37,6 +38,7 @@ export function AppRoutes() {
           <Route path="/reservations" element={<ReservationsPage />} />
           <Route path="/reports/revenue" element={<RevenueReportPage />} />
           <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/staff-users" element={<StaffUsersPage />} />
         </Route>
       </Route>
     </Routes>

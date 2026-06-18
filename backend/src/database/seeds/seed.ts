@@ -181,6 +181,69 @@ async function runSeed(dataSource: DataSource) {
       }
     }
     console.log('✅ Đã seed menu_items');
+
+    // ========== Sprint 9: Staff + Users ==========
+
+    const SEED_STAFF = [
+      { full_name: 'Nguyễn Văn A', phone: '0901234567', position: 'Quản lý nhà hàng' },
+      { full_name: 'Trần Thị B', phone: '0901234568', position: 'Phục vụ' },
+      { full_name: 'Lê Văn C', phone: '0901234569', position: 'Thu ngân' },
+      { full_name: 'Phạm Thị D', phone: '0901234570', position: 'Đầu bếp' },
+      { full_name: 'Hoàng Văn E', phone: '0901234571', position: 'Nhân viên kho' },
+    ];
+
+    const SEED_USERS = [
+      { username: 'manager', role_code: 'QUAN_LY', staff_idx: 0 },
+      { username: 'phucvu', role_code: 'PHUC_VU', staff_idx: 1 },
+      { username: 'thungan', role_code: 'THU_NGAN', staff_idx: 2 },
+      { username: 'bep', role_code: 'BEP', staff_idx: 3 },
+      { username: 'kho', role_code: 'KHO', staff_idx: 4 },
+    ];
+
+    for (let i = 0; i < SEED_STAFF.length; i++) {
+      const s = SEED_STAFF[i];
+
+      // Check staff already exists by phone
+      const existingStaff = await queryRunner.query(
+        'SELECT id FROM staff WHERE phone = ?',
+        [s.phone],
+      );
+
+      if (existingStaff.length > 0) {
+        console.log(`ℹ️ Nhân viên ${s.full_name} đã tồn tại, bỏ qua`);
+        continue;
+      }
+
+      const staffResult = await queryRunner.query(
+        'INSERT INTO staff (full_name, phone, position, status) VALUES (?, ?, ?, ?)',
+        [s.full_name, s.phone, s.position, 'DANG_LAM'],
+      );
+
+      const staffId = staffResult.insertId;
+      const u = SEED_USERS[i];
+      const roleRow = await queryRunner.query(
+        'SELECT id FROM roles WHERE code = ?',
+        [u.role_code],
+      );
+
+      if (roleRow.length > 0) {
+        const existingUser = await queryRunner.query(
+          'SELECT id FROM users WHERE username = ?',
+          [u.username],
+        );
+
+        if (existingUser.length === 0) {
+          const passwordHash = await bcrypt.hash('User@123', 12);
+          await queryRunner.query(
+            'INSERT INTO users (username, password_hash, role_id, staff_id, status) VALUES (?, ?, ?, ?, ?)',
+            [u.username, passwordHash, roleRow[0].id, staffId, 'ACTIVE'],
+          );
+          console.log(`✅ Đã tạo nhân viên ${s.full_name} (${u.username} / User@123)`);
+        } else {
+          console.log(`ℹ️ User ${u.username} đã tồn tại, bỏ qua`);
+        }
+      }
+    }
   } finally {
     await queryRunner.release();
   }

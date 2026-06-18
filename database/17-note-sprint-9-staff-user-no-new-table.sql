@@ -1,0 +1,54 @@
+-- ============================================================
+-- Sprint 9: Quản lý Nhân viên & Tài khoản
+-- Ghi chú: KHÔNG tạo bảng mới
+-- ============================================================
+-- 
+-- Lý do không tạo schema mới:
+--
+-- 1. Bảng `roles` đã được tạo từ Sprint 1 (01-schema-sprint-1-auth-role-user.sql)
+--    với đầy đủ 6 role: QUAN_TRI_HE_THONG, QUAN_LY, PHUC_VU, THU_NGAN, BEP, KHO.
+--
+-- 2. Bảng `staff` đã được tạo từ Sprint 1 (01-schema-sprint-1-auth-role-user.sql)
+--    với các cột: id, full_name, phone, position, status, created_at, updated_at, deleted_at.
+--    Cấu trúc hiện tại đáp ứng đủ nhu cầu quản lý nhân viên Sprint 9.
+--
+-- 3. Bảng `users` đã được tạo từ Sprint 1 (01-schema-sprint-1-auth-role-user.sql)
+--    với các cột: id, username, password_hash, role_id, staff_id, status, created_at,
+--    updated_at, deleted_at. Cấu trúc hiện tại đáp ứng đủ nhu cầu quản lý tài khoản Sprint 9.
+--
+-- 4. Quan hệ:
+--    - users (N) ──── (1) roles      (role_id → roles.id)
+--    - users (1) ──── (0..1) staff   (staff_id → staff.id, nullable)
+--
+-- 5. Sprint 9 chỉ mở rộng backend API và frontend, không cần thay đổi schema.
+--
+-- Backend modules sử dụng:
+--   - backend/src/database/entities/staff.entity.ts
+--   - backend/src/database/entities/user.entity.ts
+--   - backend/src/database/entities/role.entity.ts
+--   - backend/src/modules/staff/       (StaffModule mới)
+--   - backend/src/user/                (UserModule mở rộng)
+--   - backend/src/role/               (RoleModule có sẵn)
+--
+-- Endpoints Sprint 9:
+--   GET    /api/staff                 — Danh sách nhân viên
+--   GET    /api/staff/:id             — Chi tiết nhân viên
+--   POST   /api/staff                 — Tạo nhân viên (kèm tài khoản)
+--   PATCH  /api/staff/:id             — Cập nhật nhân viên
+--   PATCH  /api/staff/:id/status      — Đổi trạng thái nhân viên
+--   DELETE /api/staff/:id             — Xóa nhân viên (soft delete)
+--   GET    /api/users                 — Danh sách người dùng
+--   GET    /api/users/:id             — Chi tiết người dùng
+--   POST   /api/users                 — Tạo người dùng
+--   PATCH  /api/users/:id             — Cập nhật người dùng
+--   PATCH  /api/users/:id/status      — Đổi trạng thái người dùng
+--   PATCH  /api/users/:id/role        — Đổi vai trò người dùng
+--   PATCH  /api/users/:id/password    — Đổi mật khẩu
+--   POST   /api/users/:id/reset-password — Đặt lại mật khẩu
+--   DELETE /api/users/:id             — Xóa người dùng (soft delete)
+--   GET    /api/roles                 — Danh sách vai trò
+--   GET    /api/roles/:id             — Chi tiết vai trò
+--
+-- ============================================================
+-- Kết luận: Sprint 9 KHÔNG cần migration mới.
+-- ============================================================

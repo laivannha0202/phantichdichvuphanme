@@ -23,7 +23,7 @@ export class Staff {
   @Column({ type: 'varchar', length: 50, nullable: true })
   position!: string | null;
 
-  @Column({ type: 'varchar', length: 50, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 50, default: 'DANG_LAM' })
   status!: string;
 
   @CreateDateColumn({ type: 'datetime', precision: 3 })

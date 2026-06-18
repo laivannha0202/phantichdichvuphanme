@@ -17,6 +17,7 @@ import { KitchenModule } from './modules/kitchen/kitchen.module';
 import { ReservationsModule } from './modules/reservations/reservation.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { StaffModule } from './modules/staff/staff.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import appConfig from './config/app.config';
@@ -58,6 +59,7 @@ import jwtConfig from './config/jwt.config';
     ReservationsModule,
     ReportsModule,
     InventoryModule,
+    StaffModule,
   ],
   controllers: [AppController],
   providers: [

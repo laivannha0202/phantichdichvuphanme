@@ -38,4 +38,8 @@ export class RoleService {
       message: 'Thành công',
     };
   }
+
+  async findByCode(code: string) {
+    return this.roleRepository.findOne({ where: { code } });
+  }
 }
