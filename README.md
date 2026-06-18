@@ -15,16 +15,20 @@ Hệ thống quản lý nhà hàng — Full-stack application built with NestJS 
 
 ```
 Quanlynhahang/
-├── backend/          # NestJS REST API
-├── frontend/         # React SPA
+├── backend/          # NestJS REST API (TypeORM, MySQL)
+├── frontend/         # React SPA (Vite, Ant Design)
 ├── database/         # SQL tham khảo (migration là source of truth)
 ├── docs/             # Tài liệu thiết kế & nghiệp vụ
+│   ├── nghiepvu/     # Tài liệu nghiệp vụ
+│   ├── thietke/      # Thiết kế kỹ thuật
+│   ├── features/     # Đặc tả tính năng theo Sprint
+│   └── skill/        # Hướng dẫn công cụ dev
 └── README.md
 ```
 
 ---
 
-## Chạy Sprint 1 — Local
+## Chạy Local
 
 ### Prerequisites
 
@@ -199,7 +203,9 @@ npm run seed:run
 
 ---
 
-## API Endpoints (Sprint 1)
+## API Endpoints
+
+> Danh sách endpoints chính. Xem chi tiết tại `docs/features/` cho từng Sprint.
 
 | Method | Path | Auth | Mô tả |
 |--------|------|:----:|-------|
@@ -209,7 +215,15 @@ npm run seed:run
 | POST | `/api/auth/logout` | No | Đăng xuất |
 | GET | `/api/auth/me` | Bearer | Lấy thông tin user hiện tại |
 | GET | `/api/roles` | Bearer | Danh sách roles |
-| GET | `/api/users` | Bearer + Role | Danh sách users (QUAN_TRI_HE_THONG, QUAN_LY) |
+| GET | `/api/users` | Bearer + Role | Danh sách users |
+| GET | `/api/areas` | Bearer | Danh sách khu vực |
+| GET | `/api/tables` | Bearer | Danh sách bàn |
+| GET | `/api/categories` | Bearer | Danh sách danh mục món |
+| GET | `/api/menu-items` | Bearer | Danh sách món ăn |
+| POST | `/api/orders` | Bearer | Tạo đơn hàng |
+| GET | `/api/orders` | Bearer | Danh sách đơn hàng |
+| POST | `/api/payments` | Bearer | Thanh toán |
+| GET | `/api/reports/revenue` | Bearer | Báo cáo doanh thu |
 
 ---
 
@@ -219,10 +233,10 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 
 | Tài liệu | Mô tả |
 |----------|-------|
-| `docs/nghiepvu/01-tong-quan-yeu-cau-chuan-hoa.md` | Nghiệp vụ tổng quan |
-| `docs/thietke/01-kien-truc-he-thong.md` | Kiến trúc hệ thống |
-| `docs/thietke/02-thiet-ke-co-so-du-lieu.md` | Thiết kế database |
-| `docs/thietke/05-ke-hoach-implement-sprint-1.md` | Kế hoạch Sprint 1 |
+| `docs/nghiepvu/README.md` | Mục lục tài liệu nghiệp vụ |
+| `docs/thietke/README.md` | Mục lục tài liệu thiết kế kỹ thuật |
+| `docs/features/README.md` | Mục lục đặc tả tính năng theo Sprint |
+| `docs/features/HARD_VERIFY_SPRINT_7.md` | Checklist verify Sprint 7 |
 
 ---
 
@@ -230,9 +244,11 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 
 | Sprint | Trạng thái | Phạm vi |
 |--------|:----------:|---------|
-| Sprint 1 | ✅ Freeze | Auth, Role, User, Staff |
-| Sprint 2 | 🔜 | Bàn, Thực đơn |
-| Sprint 3 | 🔜 | Gọi món |
-| Sprint 4 | 🔜 | Bếp |
-| Sprint 5 | 🔜 | Thanh toán |
-| Sprint 6 | 🔜 | Báo cáo, Kho |
+| Sprint 1 | ✅ Done | Auth, Role, User, Staff |
+| Sprint 2 | ✅ Done | Quản lý khu vực bàn, bàn, danh mục món, món ăn |
+| Sprint 3 | ✅ Done | Gọi món, đơn hàng, chi tiết món |
+| Sprint 4 | ✅ Done | Thanh toán, hóa đơn, payment |
+| Sprint 5 | ✅ Done | Bếp xử lý món, Kitchen display |
+| Sprint 6 | ✅ Done | Đặt bàn trước, reservations |
+| Sprint 7 | ✅ Done | Báo cáo doanh thu cơ bản, chuẩn hóa RBAC |
+| Sprint 8 | ⏳ Next | Quản lý kho nguyên liệu |
