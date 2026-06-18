@@ -3,16 +3,19 @@ import { ConfigProvider } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import { AuthProvider } from './auth/AuthContext';
 import { AppRoutes } from './routes/AppRoutes';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
   return (
-    <ConfigProvider locale={viVN}>
-      <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </BrowserRouter>
-    </ConfigProvider>
+    <ErrorBoundary>
+      <ConfigProvider locale={viVN}>
+        <BrowserRouter>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </BrowserRouter>
+      </ConfigProvider>
+    </ErrorBoundary>
   );
 }
 

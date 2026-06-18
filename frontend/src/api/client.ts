@@ -39,14 +39,20 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor: tự refresh khi 401
+// Response interceptor: tự refresh khi 401 + xử lý lỗi chung
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
+
+    // Nếu không có response (network error), reject luôn
+    if (!error.response) {
+      return Promise.reject(error);
+    }
 
     // Nếu không phải 401 hoặc đã retry rồi thì reject
-    if (error.response?.status !== 401 || originalRequest._retry) {
+    if (status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
 

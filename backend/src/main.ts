@@ -1,5 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import {
+  ValidationPipe,
+  Logger,
+  BadRequestException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
@@ -38,6 +42,15 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      exceptionFactory: (validationErrors) => {
+        const messages = validationErrors.map((err) => {
+          const constraints = Object.values(err.constraints ?? {});
+          return constraints.length > 0
+            ? constraints[0]
+            : `${err.property} không hợp lệ`;
+        });
+        return new BadRequestException(messages);
+      },
     }),
   );
 

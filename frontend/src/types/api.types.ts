@@ -4,7 +4,11 @@ export interface ApiResponse<T> {
 }
 
 export interface ApiError {
+  data: null;
   message: string;
   statusCode: number;
-  error?: string;
+  errorCode: string;
+  path: string;
+  timestamp: string;
+  errors?: Array<{ field: string; message: string }>;
 }

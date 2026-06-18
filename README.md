@@ -237,6 +237,10 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 | `docs/thietke/README.md` | Mục lục tài liệu thiết kế kỹ thuật |
 | `docs/features/README.md` | Mục lục đặc tả tính năng theo Sprint |
 | `docs/features/HARD_VERIFY_SPRINT_7.md` | Checklist verify Sprint 7 |
+| `docs/features/SPRINT_10_IMPLEMENT_PLAN.md` | Kế hoạch Sprint 10 — Audit log |
+| `docs/features/SPRINT_11_IMPLEMENT_PLAN.md` | Kế hoạch Sprint 11 — Error handling & Security |
+| `docs/features/TEST_VERIFY_SPRINT_11.md` | Test verify Sprint 11 |
+| `docs/features/HARD_VERIFY_SPRINT_11.md` | Hard verify Sprint 11 |
 
 ---
 
@@ -254,3 +258,5 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 | Sprint 8 | ✅ Done | Quản lý kho nguyên liệu |
 | Sprint 9 | ✅ Done | Quản lý nhân viên & tài khoản — [Plan](docs/features/SPRINT_9_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_9.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_9.md) |
 | Sprint 10 | ✅ Done | Audit log / nhật ký hoạt động — [Plan](docs/features/SPRINT_10_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_10.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_10.md) |
+| Sprint 11 | ✅ Done | Error handling & Security hardening — [Plan](docs/features/SPRINT_11_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_11.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_11.md) |
+| Sprint 12 | ⏳ Next | Final release, demo package, full verification |
