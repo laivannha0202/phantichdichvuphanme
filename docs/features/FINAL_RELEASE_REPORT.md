@@ -99,12 +99,10 @@
 ## 8. Git Commit Final
 
 ```
-Commit: 5e94a22 feat: harden error handling and security sprint 11
+Commit: 151129e docs: finalize release package sprint 12
 Branch: main
 Remote: origin → https://github.com/laivannha0202/phantichdichvuphanme.git
 ```
-
-> Sprint 12 commit sẽ được tạo sau khi verify hoàn tất.
 
 ---
 

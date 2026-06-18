@@ -6,7 +6,7 @@ Báo cáo verify toàn bộ hệ thống quản lý nhà hàng — Sprint 12 Fin
 
 - **Thời gian verify:** 2026-06-18
 - **Branch:** main
-- **Commit mới nhất:** 5e94a22 feat: harden error handling and security sprint 11
+- **Commit mới nhất:** 151129e docs: finalize release package sprint 12
 
 ---
 
