@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Audit } from '../../common/interceptors/audit-log.interceptor';
 import { InventoryService } from './inventory.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
@@ -106,6 +107,7 @@ export class InventoryController {
   @Post('transactions/import')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'KHO')
   @ApiOperation({ summary: 'Nhập kho' })
+  @Audit('INVENTORY', 'IMPORT_STOCK', 'Ingredient')
   async importStock(
     @Body() dto: CreateTransactionDto,
     @CurrentUser() user: any,
@@ -116,6 +118,7 @@ export class InventoryController {
   @Post('transactions/export')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'KHO')
   @ApiOperation({ summary: 'Xuất kho' })
+  @Audit('INVENTORY', 'EXPORT_STOCK', 'Ingredient')
   async exportStock(
     @Body() dto: ExportTransactionDto,
     @CurrentUser() user: any,

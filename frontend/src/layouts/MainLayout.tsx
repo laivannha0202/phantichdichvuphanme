@@ -11,6 +11,7 @@ import {
   InboxOutlined,
   CalendarOutlined,
   TeamOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
@@ -31,6 +32,7 @@ export function MainLayout() {
   const canViewRevenueReport = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY';
   const canViewInventory = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY' || roleCode === 'KHO';
   const canViewStaff = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY';
+  const canViewAuditLog = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY';
 
   const menuItems = [
     {
@@ -97,6 +99,15 @@ export function MainLayout() {
             key: '/staff-users',
             icon: <TeamOutlined />,
             label: 'Nhân viên & Tài khoản',
+          },
+        ]
+      : []),
+    ...(canViewAuditLog
+      ? [
+          {
+            key: '/audit-logs',
+            icon: <SafetyCertificateOutlined />,
+            label: 'Nhật ký hoạt động',
           },
         ]
       : []),

@@ -10,3 +10,4 @@ export { OrderItem } from './order-item.entity';
 export { Invoice } from './invoice.entity';
 export { Payment } from './payment.entity';
 export { Reservation } from './reservation.entity';
+export { AuditLog } from './audit-log.entity';

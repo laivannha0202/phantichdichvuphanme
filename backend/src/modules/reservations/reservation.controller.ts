@@ -24,6 +24,7 @@ import { UpdateReservationStatusDto } from './dto/update-reservation-status.dto'
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Audit } from '../../common/interceptors/audit-log.interceptor';
 
 @ApiTags('Reservations')
 @ApiBearerAuth()
@@ -35,6 +36,7 @@ export class ReservationController {
   @Post()
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'PHUC_VU')
   @ApiOperation({ summary: 'Tạo đặt bàn mới' })
+  @Audit('RESERVATIONS', 'CREATE', 'Reservation')
   create(@Body() dto: CreateReservationDto, @Request() req: any) {
     const userId = req.user?.id;
     return this.reservationService.create(dto, userId);
@@ -68,6 +70,7 @@ export class ReservationController {
   @Patch(':id')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'PHUC_VU')
   @ApiOperation({ summary: 'Cập nhật đặt bàn' })
+  @Audit('RESERVATIONS', 'UPDATE', 'Reservation')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateReservationDto,
@@ -78,6 +81,7 @@ export class ReservationController {
   @Patch(':id/confirm')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'PHUC_VU')
   @ApiOperation({ summary: 'Xác nhận đặt bàn' })
+  @Audit('RESERVATIONS', 'STATUS_CHANGE', 'Reservation')
   confirm(@Param('id', ParseIntPipe) id: number) {
     return this.reservationService.confirm(id);
   }
@@ -92,6 +96,7 @@ export class ReservationController {
   @Patch(':id/cancel')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Hủy đặt bàn' })
+  @Audit('RESERVATIONS', 'STATUS_CHANGE', 'Reservation')
   cancel(@Param('id', ParseIntPipe) id: number) {
     return this.reservationService.cancel(id);
   }

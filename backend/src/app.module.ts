@@ -18,6 +18,8 @@ import { ReservationsModule } from './modules/reservations/reservation.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { StaffModule } from './modules/staff/staff.module';
+import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
+import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import appConfig from './config/app.config';
@@ -60,6 +62,7 @@ import jwtConfig from './config/jwt.config';
     ReportsModule,
     InventoryModule,
     StaffModule,
+    AuditLogsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -71,6 +74,10 @@ import jwtConfig from './config/jwt.config';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditLogInterceptor,
     },
   ],
 })

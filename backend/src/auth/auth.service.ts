@@ -1,8 +1,13 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Logger,
+  Inject,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../database/entities/user.entity';
@@ -17,7 +22,37 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly dataSource: DataSource,
   ) {}
+
+  private async writeAuditLog(entry: {
+    user_id: number | null;
+    username: string | null;
+    role_code: string | null;
+    action: string;
+    module: string;
+    description?: string;
+    metadata?: Record<string, any> | null;
+  }): Promise<void> {
+    try {
+      await this.dataSource.query(
+        `INSERT INTO audit_logs
+          (user_id, username, role_code, action, module, description, metadata)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          entry.user_id,
+          entry.username,
+          entry.role_code,
+          entry.action,
+          entry.module,
+          entry.description ?? null,
+          entry.metadata ? JSON.stringify(entry.metadata) : null,
+        ],
+      );
+    } catch (error: any) {
+      this.logger.error(`Failed to write audit log: ${error.message}`);
+    }
+  }
 
   async login(loginDto: LoginDto) {
     const { username, password } = loginDto;
@@ -29,15 +64,39 @@ export class AuthService {
     });
 
     if (!user) {
+      await this.writeAuditLog({
+        user_id: null,
+        username,
+        role_code: null,
+        action: 'LOGIN_FAILED',
+        module: 'AUTH',
+        description: `Đăng nhập thất bại — sai tên đăng nhập`,
+      });
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
     }
 
     if (user.status !== 'ACTIVE') {
+      await this.writeAuditLog({
+        user_id: user.id,
+        username: user.username,
+        role_code: user.role?.code ?? null,
+        action: 'LOGIN_FAILED',
+        module: 'AUTH',
+        description: `Đăng nhập thất bại — tài khoản bị vô hiệu hóa`,
+      });
       throw new UnauthorizedException('Tài khoản đã bị vô hiệu hóa');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
+      await this.writeAuditLog({
+        user_id: user.id,
+        username: user.username,
+        role_code: user.role?.code ?? null,
+        action: 'LOGIN_FAILED',
+        module: 'AUTH',
+        description: `Đăng nhập thất bại — sai mật khẩu`,
+      });
       throw new UnauthorizedException('Tên đăng nhập hoặc mật khẩu không đúng');
     }
 
@@ -72,6 +131,16 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(payload, {
       secret: refreshSecret,
       expiresIn: refreshExpiresIn as any,
+    });
+
+    // Ghi audit log thành công
+    await this.writeAuditLog({
+      user_id: user.id,
+      username: user.username,
+      role_code: user.role.code,
+      action: 'LOGIN_SUCCESS',
+      module: 'AUTH',
+      description: `Đăng nhập thành công`,
     });
 
     return {
@@ -111,14 +180,6 @@ export class AuthService {
       roleCode: user.role.code,
     };
 
-    const accessSecret = this.configService.get<string>(
-      'jwt.accessSecret',
-      'secret',
-    );
-    const accessExpiresIn = this.configService.get<string>(
-      'jwt.accessExpiresIn',
-      '30m',
-    );
     const refreshSecret = this.configService.get<string>(
       'jwt.refreshSecret',
       'secret',
@@ -129,8 +190,8 @@ export class AuthService {
     );
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: accessSecret,
-      expiresIn: accessExpiresIn as any,
+      secret: this.configService.get<string>('jwt.accessSecret', 'secret'),
+      expiresIn: this.configService.get<string>('jwt.accessExpiresIn', '30m') as any,
     });
 
     const refreshToken = this.jwtService.sign(payload, {

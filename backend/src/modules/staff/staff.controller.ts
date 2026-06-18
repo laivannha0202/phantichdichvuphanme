@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Audit } from '../../common/interceptors/audit-log.interceptor';
 
 @ApiTags('Staff')
 @ApiBearerAuth()
@@ -42,6 +43,7 @@ export class StaffController {
   @Post()
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Tạo nhân viên mới (kèm tài khoản)' })
+  @Audit('STAFF', 'CREATE', 'Staff')
   async create(
     @Body() dto: CreateStaffDto,
     @CurrentUser() user: any,
@@ -52,6 +54,7 @@ export class StaffController {
   @Patch(':id')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Cập nhật thông tin nhân viên' })
+  @Audit('STAFF', 'UPDATE', 'Staff')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateStaffDto,
@@ -62,6 +65,7 @@ export class StaffController {
   @Patch(':id/status')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Cập nhật trạng thái nhân viên' })
+  @Audit('STAFF', 'STATUS_CHANGE', 'Staff')
   async updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status') status: string,
@@ -73,6 +77,7 @@ export class StaffController {
   @Delete(':id')
   @Roles('QUAN_TRI_HE_THONG')
   @ApiOperation({ summary: 'Xóa nhân viên (soft delete)' })
+  @Audit('STAFF', 'SOFT_DELETE', 'Staff')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.staffService.remove(id);
   }

@@ -15,6 +15,7 @@ import { ReservationsPage } from '../pages/ReservationsPage';
 import { RevenueReportPage } from '../pages/RevenueReportPage';
 import InventoryPage from '../pages/InventoryPage';
 import StaffUsersPage from '../pages/StaffUsersPage';
+import { AuditLogsPage } from '../pages/AuditLogsPage';
 import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { MainLayout } from '../layouts/MainLayout';
 
@@ -39,6 +40,7 @@ export function AppRoutes() {
           <Route path="/reports/revenue" element={<RevenueReportPage />} />
           <Route path="/inventory" element={<InventoryPage />} />
           <Route path="/staff-users" element={<StaffUsersPage />} />
+          <Route path="/audit-logs" element={<AuditLogsPage />} />
         </Route>
       </Route>
     </Routes>

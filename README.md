@@ -253,4 +253,4 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 | Sprint 7 | ✅ Done | Báo cáo doanh thu cơ bản, chuẩn hóa RBAC |
 | Sprint 8 | ✅ Done | Quản lý kho nguyên liệu |
 | Sprint 9 | ✅ Done | Quản lý nhân viên & tài khoản — [Plan](docs/features/SPRINT_9_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_9.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_9.md) |
-| Sprint 10 | ⏳ Next | Audit log / nhật ký hoạt động |
+| Sprint 10 | ✅ Done | Audit log / nhật ký hoạt động — [Plan](docs/features/SPRINT_10_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_10.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_10.md) |

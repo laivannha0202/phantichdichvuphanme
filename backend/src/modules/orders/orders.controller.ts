@@ -21,6 +21,7 @@ import { UpdateOrderItemStatusDto } from './dto/update-order-item-status.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Audit } from '../../common/interceptors/audit-log.interceptor';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -56,6 +57,7 @@ export class OrdersController {
   @Post()
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'PHUC_VU')
   @ApiOperation({ summary: 'Tạo đơn hàng mới' })
+  @Audit('ORDERS', 'CREATE', 'Order')
   create(@Body() createOrderDto: CreateOrderDto, @Request() req: any) {
     const userId = req.user?.id;
     return this.ordersService.create(createOrderDto, userId);
@@ -64,6 +66,7 @@ export class OrdersController {
   @Patch(':id/status')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY', 'PHUC_VU')
   @ApiOperation({ summary: 'Cập nhật trạng thái đơn hàng' })
+  @Audit('ORDERS', 'STATUS_CHANGE', 'Order')
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDto: UpdateOrderStatusDto,

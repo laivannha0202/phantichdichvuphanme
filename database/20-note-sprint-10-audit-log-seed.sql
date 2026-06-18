@@ -1,0 +1,23 @@
+-- ============================================================
+-- Sprint 10: Note — Audit Log Seed
+-- File: 20-note-sprint-10-audit-log-seed.sql
+-- ============================================================
+--
+-- Audit log KHÔNG cần seed dữ liệu demo cố định.
+-- Dữ liệu audit phát sinh khi runtime thao tác.
+--
+-- Có thể tạo vài log test bằng API/runtime verify
+-- nhưng không dùng làm seed chính thức.
+--
+-- Xem docs/features/TEST_VERIFY_SPRINT_10.md
+-- để biết cách verify runtime.
+--
+-- ============================================================
+-- Ghi chú quan trọng:
+-- ============================================================
+-- 1. Audit log là INSERT-only — không UPDATE/DELETE bản ghi.
+-- 2. Không log password, token, refresh token vào metadata.
+-- 3. user_id là FK → users.id, ON DELETE SET NULL.
+-- 4. username và role_code là snapshot tại thời điểm log.
+-- 5. Metadata phải được sanitize trước khi lưu.
+-- ============================================================

@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Audit } from '../common/interceptors/audit-log.interceptor';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -46,6 +47,7 @@ export class UserController {
   @Post()
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Tạo người dùng mới' })
+  @Audit('USERS', 'CREATE', 'User')
   async create(
     @Body() dto: CreateUserDto,
     @CurrentUser() user: any,
@@ -56,6 +58,7 @@ export class UserController {
   @Patch(':id')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Cập nhật thông tin người dùng' })
+  @Audit('USERS', 'UPDATE', 'User')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserDto,
@@ -67,6 +70,7 @@ export class UserController {
   @Patch(':id/status')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Cập nhật trạng thái người dùng' })
+  @Audit('USERS', 'STATUS_CHANGE', 'User')
   async updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserStatusDto,
@@ -78,6 +82,7 @@ export class UserController {
   @Patch(':id/role')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Đổi vai trò người dùng' })
+  @Audit('USERS', 'UPDATE_ROLE', 'User')
   async updateRole(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUserRoleDto,
@@ -89,6 +94,7 @@ export class UserController {
   @Patch(':id/password')
   @Roles('QUAN_TRI_HE_THONG', 'QUAN_LY')
   @ApiOperation({ summary: 'Đổi mật khẩu người dùng' })
+  @Audit('USERS', 'CHANGE_PASSWORD', 'User')
   async updatePassword(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdatePasswordDto,
@@ -111,6 +117,7 @@ export class UserController {
   @Delete(':id')
   @Roles('QUAN_TRI_HE_THONG')
   @ApiOperation({ summary: 'Xóa người dùng (soft delete)' })
+  @Audit('USERS', 'SOFT_DELETE', 'User')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
   }
