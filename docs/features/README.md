@@ -25,6 +25,9 @@
 |------|----------|-------------|
 | `SPRINT_2_IMPLEMENT_PLAN.md` | Kế hoạch implement chi tiết Sprint 2 | Trước khi code Sprint 2 |
 | `TEST_VERIFY_SPRINT_2.md` | Test plan & verify checklist Sprint 2 | Sau khi code Sprint 2 |
+| `FULL_SYSTEM_VERIFY.md` | Verify toàn hệ thống — Sprint 12 | Final release |
+| `DEMO_GUIDE.md` | Hướng dẫn demo hệ thống — Sprint 12 | Demo / bảo vệ |
+| `FINAL_RELEASE_REPORT.md` | Báo cáo final release — Sprint 12 | Nộp đồ án |
 
 ## Sơ đồ Sprint
 

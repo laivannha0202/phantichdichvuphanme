@@ -227,6 +227,36 @@ npm run seed:run
 
 ---
 
+## Final Release
+
+Hệ thống quản lý nhà hàng đã hoàn thành 12 sprints và sẵn sàng nộp/bảo vệ.
+
+| Layer | Công nghệ |
+|-------|-----------|
+| Backend | NestJS 11 + TypeORM + MySQL 8 |
+| Frontend | React 19 + Vite 8 + Ant Design 6 + TypeScript |
+| Database | MySQL 8.0 (local), 21 file SQL chính thức trong `database/` |
+
+### Demo URL local
+
+| Service | URL |
+|---------|-----|
+| Backend API | http://localhost:5011/api |
+| Frontend | http://localhost:5173 |
+| Swagger | http://localhost:5011/api/docs |
+
+### Tài khoản Demo
+
+| Field | Giá trị |
+|-------|---------|
+| Username | `admin` |
+| Password | `Admin@123` |
+| Role | QUAN_TRI_HE_THONG (Quản trị hệ thống) |
+
+> **Cảnh báo:** Đây là tài khoản dev/local, KHÔNG dùng trong production.
+
+---
+
 ## Docs
 
 Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
@@ -241,6 +271,9 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 | `docs/features/SPRINT_11_IMPLEMENT_PLAN.md` | Kế hoạch Sprint 11 — Error handling & Security |
 | `docs/features/TEST_VERIFY_SPRINT_11.md` | Test verify Sprint 11 |
 | `docs/features/HARD_VERIFY_SPRINT_11.md` | Hard verify Sprint 11 |
+| `docs/features/FULL_SYSTEM_VERIFY.md` | Verify toàn hệ thống — Sprint 12 |
+| `docs/features/DEMO_GUIDE.md` | Hướng dẫn demo — Sprint 12 |
+| `docs/features/FINAL_RELEASE_REPORT.md` | Báo cáo final release — Sprint 12 |
 
 ---
 
@@ -259,4 +292,4 @@ Xem `docs/README.md` để biết danh sách đầy đủ tài liệu.
 | Sprint 9 | ✅ Done | Quản lý nhân viên & tài khoản — [Plan](docs/features/SPRINT_9_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_9.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_9.md) |
 | Sprint 10 | ✅ Done | Audit log / nhật ký hoạt động — [Plan](docs/features/SPRINT_10_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_10.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_10.md) |
 | Sprint 11 | ✅ Done | Error handling & Security hardening — [Plan](docs/features/SPRINT_11_IMPLEMENT_PLAN.md) · [Test](docs/features/TEST_VERIFY_SPRINT_11.md) · [Verify](docs/features/HARD_VERIFY_SPRINT_11.md) |
-| Sprint 12 | ⏳ Next | Final release, demo package, full verification |
+| Sprint 12 | ✅ Done | Final release, demo package, full verification — [Verify](docs/features/FULL_SYSTEM_VERIFY.md) · [Demo](docs/features/DEMO_GUIDE.md) · [Report](docs/features/FINAL_RELEASE_REPORT.md) |
