@@ -142,11 +142,11 @@ npm run build → ✅ PASS (chunk size warning 1.4MB - Ant Design, bỏ qua)
 
 ## 19. Có commit/push không
 
-**KHÔNG.**
+**✅ CÓ.** Commit `50036bb` + push lên `main` thành công.
 
 ## 20. Có thể commit/push Sprint 9 chưa
 
-**CÓ.** Code đã hoàn thiện, build pass, seed OK. Chờ user yêu cầu commit/push.
+**✅ ĐÃ THỰC HIỆN.** Sprint 9 đã được commit và push thành công.
 
 ## 21. Có thể chuẩn bị Sprint 10 chưa
 
