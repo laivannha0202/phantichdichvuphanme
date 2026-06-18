@@ -52,7 +52,7 @@ export function LoginPage() {
 
         {error && (
           <Alert
-            message={error}
+            title={error}
             type="error"
             showIcon
             closable
@@ -72,14 +72,14 @@ export function LoginPage() {
             name="username"
             rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" />
+            <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" autoComplete="off" />
           </Form.Item>
 
           <Form.Item
             name="password"
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+            <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" autoComplete="new-password" />
           </Form.Item>
 
           <Form.Item>

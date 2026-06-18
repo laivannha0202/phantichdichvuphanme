@@ -56,10 +56,14 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Không refresh cho chính endpoint refresh
+    // Không refresh cho các auth endpoints (login, refresh) — reject và để caller xử lý
+    // Login 401 = sai credentials, không phải hết token
+    // Refresh 401 = refresh token hết hạn
     if (originalRequest.url === '/auth/refresh') {
       tokenStorage.clear();
-      window.location.href = '/login';
+      return Promise.reject(error);
+    }
+    if (originalRequest.url === '/auth/login') {
       return Promise.reject(error);
     }
 
@@ -88,7 +92,6 @@ apiClient.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
       tokenStorage.clear();
-      window.location.href = '/login';
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
