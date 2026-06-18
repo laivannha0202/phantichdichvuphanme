@@ -13,6 +13,7 @@ import PaymentPage from '../pages/PaymentPage';
 import { KitchenPage } from '../pages/KitchenPage';
 import { ReservationsPage } from '../pages/ReservationsPage';
 import { RevenueReportPage } from '../pages/RevenueReportPage';
+import InventoryPage from '../pages/InventoryPage';
 import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { MainLayout } from '../layouts/MainLayout';
 
@@ -35,6 +36,7 @@ export function AppRoutes() {
           <Route path="/kitchen" element={<KitchenPage />} />
           <Route path="/reservations" element={<ReservationsPage />} />
           <Route path="/reports/revenue" element={<RevenueReportPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
         </Route>
       </Route>
     </Routes>

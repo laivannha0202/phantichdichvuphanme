@@ -28,6 +28,7 @@ export function MainLayout() {
 
   const roleCode = user?.role?.code;
   const canViewRevenueReport = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY';
+  const canViewInventory = roleCode === 'QUAN_TRI_HE_THONG' || roleCode === 'QUAN_LY' || roleCode === 'KHO';
 
   const menuItems = [
     {
@@ -79,12 +80,15 @@ export function MainLayout() {
           },
         ]
       : []),
-    {
-      key: 'inventory',
-      icon: <InboxOutlined />,
-      label: 'Kho',
-      disabled: true,
-    },
+    ...(canViewInventory
+      ? [
+          {
+            key: '/inventory',
+            icon: <InboxOutlined />,
+            label: 'Kho',
+          },
+        ]
+      : []),
   ];
 
   return (
