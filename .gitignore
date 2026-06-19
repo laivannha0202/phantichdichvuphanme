@@ -37,6 +37,8 @@ test-output*
 # Uploads (user-generated content)
 backend/uploads/*
 !backend/uploads/.gitkeep
+!backend/uploads/menu-items/
+!backend/uploads/menu-items/.gitkeep
 
 # OpenCode and tooling
 .opencode/
