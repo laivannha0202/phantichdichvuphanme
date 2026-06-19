@@ -8,8 +8,8 @@
 ## 1. Tổng quan
 
 Tài liệu này quy định cách xử lý ảnh trong hệ thống, đặc biệt cho
-`menu_items.image_url`. Sprint 2 chưa bắt buộc upload ảnh thật —
-chỉ cần UI có vùng ảnh và xử lý placeholder đúng cách.
+`menu_items.image_url`. Upload ảnh món ăn đã được implement tại Sprint 2+
+và hoàn thiện ở các sprint sau.
 
 ---
 
@@ -19,8 +19,7 @@ chỉ cần UI có vùng ảnh và xử lý placeholder đúng cách.
 
 - Kiểu: `VARCHAR(500)` hoặc `TEXT`
 - **Nullable**: Có thể NULL
-- **Sprint 2**: Không upload ảnh thật, để NULL hoặc nhập URL mẫu
-- **hiện tại**: Upload ảnh thật đã implement — `POST /api/uploads/menu-items` (multipart/form-data, field `file`), lưu vào `backend/uploads/menu-items/`
+- **Upload ảnh**: Đã implement — `POST /api/uploads/menu-items` (multipart/form-data, field `file`), lưu vào `backend/uploads/menu-items/`
 
 ### 2.2 Upload ảnh — Đã implement ✅
 
@@ -110,16 +109,16 @@ const handleImageError = (e) => {
 │  │    (placeholder area)    │   │
 │  │                          │   │
 │  └──────────────────────────┘   │
-│  URL ảnh: [___________]         │  ← Nhập URL thủ công (Sprint 2)
+│  URL ảnh: [___________]         │  ← Nhập URL thủ công hoặc upload
 │                                  │
 │          [Huỷ]  [Lưu]           │
 └─────────────────────────────────┘
 ```
 
-**Sprint 2:**
-- Hiển thị vùng ảnh với placeholder
+**Hiện tại:**
+- Hiển thị vùng ảnh với placeholder khi chưa có ảnh
 - Cho phép nhập `image_url` thủ công (text input)
-- Không có nút "Upload ảnh"
+- Có nút "Upload ảnh" gọi `POST /api/uploads/menu-items`
 
 ---
 
@@ -139,25 +138,17 @@ const handleImageError = (e) => {
 
 ---
 
-## 6. Kế hoạch Upload ảnh (Future)
-
-> **KHÔNG implement ở Sprint 2.** Đây là reference cho sprint sau.
-
-### 6.1 Khi nào cần
-
-- Khi business yêu cầu upload ảnh thật
-- Khi đã có storage solution (local filesystem hoặc object storage)
-
-### 6.2 Khi implement
+## 6. Upload ảnh — Đã implement ✅
 
 | Phần | Quyết định |
 |------|-----------|
-| **Accept types** | `jpg`, `jpeg`, `png`, `webp` |
-| **Max file size** | 5MB per file |
-| **Storage** | Local `/uploads/menu/` hoặc S3/MinIO |
-| **DB field** | `image_url` — lưu URL/path, KHÔNG lưu base64 |
-| **Endpoint** | `POST /api/menu-items/:id/image` |
-| **Response** | `{ "image_url": "/uploads/menu/pho-bo.jpg" }` |
+| **Accept types** | `.jpg`, `.jpeg`, `.png`, `.webp` |
+| **Max file size** | 3MB per file |
+| **Storage** | Local `backend/uploads/menu-items/` |
+| **DB field** | `image_url` — lưu URL path, KHÔNG lưu base64 |
+| **Endpoint** | `POST /api/uploads/menu-items` |
+| **Static serve** | `/uploads` → `backend/uploads/` qua `express.static` |
+| **Response** | `{ url, filename, originalname, size }` |
 
 ### 6.3 Flow upload
 
@@ -178,11 +169,11 @@ User chọn file → Frontend validate type + size
 
 ## 7. Checklist khi implement UI ảnh
 
-- [ ] Vùng ảnh hiển thị đúng kích thước
-- [ ] Placeholder hiển thị khi `image_url` là NULL
-- [ ] Placeholder hiển thị khi ảnh load lỗi
-- [ ] `object-fit: cover` hoạt động đúng
-- [ ] Form có input URL (Sprint 2)
-- [ ] Không có nút upload (Sprint 2)
-- [ ] Không lưu base64 trong DB
-- [ ] Lazy loading cho danh sách dài
+- [x] Vùng ảnh hiển thị đúng kích thước
+- [x] Placeholder hiển thị khi `image_url` là NULL
+- [x] Placeholder hiển thị khi ảnh load lỗi
+- [x] `object-fit: cover` hoạt động đúng
+- [x] Form có input URL
+- [x] Có nút upload ảnh (`POST /api/uploads/menu-items`)
+- [x] Không lưu base64 trong DB
+- [x] Lazy loading cho danh sách dài

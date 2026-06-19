@@ -72,15 +72,15 @@ docs/
 | [FEAT_02_QUAN_LY_BAN_KHU_VUC.md](features/FEAT_02_QUAN_LY_BAN_KHU_VUC.md) | Quản lý Khu vực & Bàn | Sprint 2 |
 | [FEAT_03_QUAN_LY_THUC_DON.md](features/FEAT_03_QUAN_LY_THUC_DON.md) | Quản lý Thực đơn | Sprint 2 |
 | [FEAT_04_GOI_MON_PHUC_VU.md](features/FEAT_04_GOI_MON_PHUC_VU.md) | Gọi món / Phục vụ | Sprint 3 |
-| [FEAT_05_BEP_XU_LY_MON.md](features/FEAT_05_BEP_XU_LY_MON.md) | Bếp xử lý món | Sprint 4 |
-| [FEAT_06_THANH_TOAN_HOA_DON.md](features/FEAT_06_THANH_TOAN_HOA_DON.md) | Thanh toán / Hoá đơn | Sprint 4/5 |
-| [FEAT_07_DAT_BAN_TRUOC.md](features/FEAT_07_DAT_BAN_TRUOC.md) | Đặt bàn trước | Sprint 5 |
-| [FEAT_08_BAO_CAO_DOANH_THU.md](features/FEAT_08_BAO_CAO_DOANH_THU.md) | Báo cáo Doanh thu | Sprint 5 |
-| [FEAT_09_KHO_NGUYEN_LIEU.md](features/FEAT_09_KHO_NGUYEN_LIEU.md) | Kho Nguyên liệu | Sprint 6 |
-| [FEAT_10_NHAN_VIEN_TAI_KHOAN.md](features/FEAT_10_NHAN_VIEN_TAI_KHOAN.md) | Nhân viên / Tài khoản | Sprint 6 |
-| [FEAT_11_AUDIT_LOG.md](features/FEAT_11_AUDIT_LOG.md) | Audit Log & Log theo dõi | Cross-sprint |
-| [FEAT_12_ERROR_HANDLING_SECURITY.md](features/FEAT_12_ERROR_HANDLING_SECURITY.md) | Xử lý lỗi & Bảo mật | Cross-sprint |
-| [FEAT_13_CHECKLIST_VERIFY_FULLSTACK.md](features/FEAT_13_CHECKLIST_VERIFY_FULLSTACK.md) | Checklist Verify Toàn bộ Hệ thống | Sau Sprint 6 |
+| [FEAT_05_BEP_XU_LY_MON.md](features/FEAT_05_BEP_XU_LY_MON.md) | Bếp xử lý món | Sprint 5 |
+| [FEAT_06_THANH_TOAN_HOA_DON.md](features/FEAT_06_THANH_TOAN_HOA_DON.md) | Thanh toán / Hoá đơn | Sprint 4 |
+| [FEAT_07_DAT_BAN_TRUOC.md](features/FEAT_07_DAT_BAN_TRUOC.md) | Đặt bàn trước | Sprint 6 |
+| [FEAT_08_BAO_CAO_DOANH_THU.md](features/FEAT_08_BAO_CAO_DOANH_THU.md) | Báo cáo Doanh thu | Sprint 7 |
+| [FEAT_09_KHO_NGUYEN_LIEU.md](features/FEAT_09_KHO_NGUYEN_LIEU.md) | Kho Nguyên liệu | Sprint 8 |
+| [FEAT_10_NHAN_VIEN_TAI_KHOAN.md](features/FEAT_10_NHAN_VIEN_TAI_KHOAN.md) | Nhân viên / Tài khoản | Sprint 9 |
+| [FEAT_11_AUDIT_LOG.md](features/FEAT_11_AUDIT_LOG.md) | Audit Log & Log theo dõi | Sprint 10 |
+| [FEAT_12_ERROR_HANDLING_SECURITY.md](features/FEAT_12_ERROR_HANDLING_SECURITY.md) | Xử lý lỗi & Bảo mật | Sprint 11 |
+| [FEAT_13_CHECKLIST_VERIFY_FULLSTACK.md](features/FEAT_13_CHECKLIST_VERIFY_FULLSTACK.md) | Checklist Verify Toàn bộ Hệ thống | Sprint 12 |
 
 ---
 

@@ -17,7 +17,7 @@ Hệ thống quản lý nhà hàng — Full-stack application built with NestJS 
 Quanlynhahang/
 ├── backend/          # NestJS REST API (TypeORM, MySQL)
 ├── frontend/         # React SPA (Vite, Ant Design)
-├── database/         # SQL tham khảo (migration là source of truth)
+├── database/         # 21 file SQL chính thức (source of truth cho schema)
 ├── docs/             # Tài liệu thiết kế & nghiệp vụ
 │   ├── nghiepvu/     # Tài liệu nghiệp vụ
 │   ├── thietke/      # Thiết kế kỹ thuật
@@ -105,7 +105,7 @@ cd backend
 npm run migration:run
 ```
 
-Tạo các bảng: `roles`, `staff`, `users`, và các bảng nghiệp vụ theo từng sprint.
+Tạo tất cả bảng cho 12 Sprint: roles, staff, users, table_areas, tables, menu_categories, menu_items, orders, order_items, payments, invoices, reservations, inventory_items, suppliers, inventory_transactions, audit_logs, v_revenue_summary.
 
 ### Bước 7: Seed dữ liệu
 

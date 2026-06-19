@@ -69,7 +69,7 @@ async function bootstrap() {
   // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('Quản lý nhà hàng API')
-    .setDescription('API cho hệ thống quản lý nhà hàng - Sprint 5: Bếp xử lý món')
+    .setDescription('API cho hệ thống quản lý nhà hàng — Final Release Sprint 12')
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('Auth', 'Xác thực & phân quyền')
@@ -81,6 +81,12 @@ async function bootstrap() {
     .addTag('Menu Items', 'Quản lý món ăn')
     .addTag('Orders', 'Quản lý đơn hàng & món trong đơn')
     .addTag('Kitchen', 'Bếp xử lý món - KDS')
+    .addTag('Reservations', 'Đặt bàn trước')
+    .addTag('Invoices', 'Hóa đơn & Thanh toán')
+    .addTag('Reports', 'Báo cáo doanh thu')
+    .addTag('Inventory', 'Quản lý kho nguyên liệu')
+    .addTag('Staff', 'Quản lý nhân viên & tài khoản')
+    .addTag('Audit Logs', 'Nhật ký hoạt động hệ thống')
     .addTag('Uploads', 'Upload file ảnh')
     .build();
 
