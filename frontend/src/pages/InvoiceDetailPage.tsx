@@ -24,23 +24,24 @@ const InvoiceDetailPage: React.FC = () => {
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchInvoice(parseInt(id));
-    }
-  }, [id]);
-
   const fetchInvoice = async (invoiceId: number) => {
     setLoading(true);
     try {
       const data = await getInvoice(invoiceId);
       setInvoice(data);
-    } catch (error) {
+    } catch {
       message.error('Không thể tải chi tiết hóa đơn');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchInvoice(parseInt(id));
+    }
+  }, [id]);
 
   if (!invoice) {
     return null;
@@ -50,7 +51,7 @@ const InvoiceDetailPage: React.FC = () => {
     {
       title: 'STT',
       key: 'index',
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
       title: 'Món',
@@ -71,7 +72,7 @@ const InvoiceDetailPage: React.FC = () => {
     {
       title: 'Thành tiền',
       key: 'subtotal',
-      render: (_: any, record: any) =>
+      render: (_: unknown, record: { unit_price: number; quantity: number }) =>
         `${(record.unit_price * record.quantity).toLocaleString('vi-VN')}đ`,
     },
   ];

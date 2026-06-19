@@ -24,7 +24,7 @@
 | Reservations / Đặt bàn | Sprint 5 |
 | Reports / Báo cáo | Sprint 5 |
 | Inventory / Kho | Sprint 6 |
-| Upload ảnh thật | Optional/Future |
+| Upload ảnh thật | ~~Optional/Future~~ ✅ Đã implement (POST /api/uploads/menu-items) |
 | QR code | Optional/Future |
 
 ---

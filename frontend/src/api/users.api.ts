@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { unwrapApiData } from './unwrap';
 import type {
   UserRecord,
   CreateUserDto,
@@ -7,27 +8,27 @@ import type {
 
 export const getUsersList = async (): Promise<UserRecord[]> => {
   const response = await apiClient.get('/users');
-  return response.data;
+  return unwrapApiData<UserRecord[]>(response);
 };
 
 export const getUser = async (id: number): Promise<UserRecord> => {
   const response = await apiClient.get(`/users/${id}`);
-  return response.data;
+  return unwrapApiData<UserRecord>(response);
 };
 
 export const createUser = async (data: CreateUserDto): Promise<UserRecord> => {
   const response = await apiClient.post('/users', data);
-  return response.data;
+  return unwrapApiData<UserRecord>(response);
 };
 
 export const updateUser = async (id: number, data: UpdateUserDto): Promise<UserRecord> => {
   const response = await apiClient.patch(`/users/${id}`, data);
-  return response.data;
+  return unwrapApiData<UserRecord>(response);
 };
 
 export const updateUserStatus = async (id: number, status: string): Promise<UserRecord> => {
   const response = await apiClient.patch(`/users/${id}/status`, { status });
-  return response.data;
+  return unwrapApiData<UserRecord>(response);
 };
 
 export const resetUserPassword = async (id: number, newPassword: string): Promise<void> => {

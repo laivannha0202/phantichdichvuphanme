@@ -26,7 +26,6 @@ Xây dựng tính năng quản lý thực đơn nhà hàng bao gồm danh mục 
 - Gọi món từ thực đơn (sprint 3 — FEAT_04)
 - Quản lý giá/đồng giá (giá trong menu item)
 - Chương trình khuyến mãi
-- Upload ảnh món ăn (Optional/Future — `image_url` là nullable TEXT, không bắt buộc)
 
 ## 5. Tài liệu nguồn liên quan
 
@@ -139,7 +138,7 @@ backend/src/modules/
 | PATCH | `/api/menu-items/:id` | Cập nhật món | QUAN_TRI_HE_THONG, QUAN_LY |
 | PATCH | `/api/menu-items/:id/status` | Cập nhật trạng thái món | QUAN_TRI_HE_THONG, QUAN_LY, BEP |
 | DELETE | `/api/menu-items/:id` | Xoá món | QUAN_TRI_HE_THONG |
-| POST | `/api/menu-items/:id/image` | Upload ảnh món | QUAN_TRI_HE_THONG, QUAN_LY (Optional/Future) |
+| POST | `/api/uploads/menu-items` | Upload ảnh món (multipart/form-data, field: `file`) | QUAN_TRI_HE_THONG, QUAN_LY | ✅ |
 
 ### Request/Response Format
 

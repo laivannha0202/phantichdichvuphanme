@@ -83,6 +83,7 @@ export function ReservationsPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchReservations();
     fetchTables();
   }, [fetchReservations, fetchTables]);
@@ -123,9 +124,10 @@ export function ReservationsPage() {
 
       setIsModalOpen(false);
       fetchReservations();
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      if (err.response?.data?.message) {
+        message.error(err.response.data.message);
       }
     }
   };

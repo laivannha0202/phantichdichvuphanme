@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { join } from 'path';
+import express from 'express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -24,8 +26,12 @@ async function bootstrap() {
     'http://localhost:5173',
   );
 
-  // Security
-  app.use(helmet());
+  // Security — relax crossOriginResourcePolicy for serving uploaded images
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: false,
+    }),
+  );
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
@@ -54,6 +60,9 @@ async function bootstrap() {
     }),
   );
 
+  // Serve uploaded files
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+
   // Global prefix
   app.setGlobalPrefix('api');
 
@@ -72,6 +81,7 @@ async function bootstrap() {
     .addTag('Menu Items', 'Quản lý món ăn')
     .addTag('Orders', 'Quản lý đơn hàng & món trong đơn')
     .addTag('Kitchen', 'Bếp xử lý món - KDS')
+    .addTag('Uploads', 'Upload file ảnh')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

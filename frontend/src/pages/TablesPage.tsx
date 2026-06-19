@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Table,
   Button,
@@ -44,7 +44,7 @@ export function TablesPage() {
   const [filterStatus, setFilterStatus] = useState<string | undefined>();
   const [form] = Form.useForm();
 
-  const fetchTables = async () => {
+  const fetchTables = useCallback(async () => {
     setLoading(true);
     try {
       const response = await tablesApi.getAll({
@@ -57,24 +57,26 @@ export function TablesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterArea, filterStatus]);
 
-  const fetchAreas = async () => {
+  const fetchAreas = useCallback(async () => {
     try {
       const response = await tableAreasApi.getAll();
       setAreas(response.data);
     } catch {
       message.error('Không thể tải danh sách khu vực');
     }
-  };
-
-  useEffect(() => {
-    fetchAreas();
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchAreas();
+  }, [fetchAreas]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTables();
-  }, [filterArea, filterStatus]);
+  }, [fetchTables]);
 
   const handleCreate = () => {
     setEditingTable(null);

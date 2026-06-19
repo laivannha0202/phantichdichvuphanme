@@ -13,12 +13,6 @@ const PaymentPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchInvoice(parseInt(id));
-    }
-  }, [id]);
-
   const fetchInvoice = async (invoiceId: number) => {
     setLoading(true);
     try {
@@ -28,12 +22,19 @@ const PaymentPage: React.FC = () => {
         payment_method: 'TIEN_MAT',
         amount: data.total,
       });
-    } catch (error) {
+    } catch {
       message.error('Không thể tải thông tin hóa đơn');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchInvoice(parseInt(id));
+    }
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (values: PayInvoiceRequest) => {
     if (!invoice) return;
@@ -46,7 +47,7 @@ const PaymentPage: React.FC = () => {
         message.info(`Tiền thừa: ${result.change.toLocaleString('vi-VN')}đ`);
       }
       navigate(`/invoices/${invoice.id}`);
-    } catch (error) {
+    } catch {
       message.error('Không thể thanh toán');
     } finally {
       setSubmitting(false);
@@ -115,7 +116,7 @@ const PaymentPage: React.FC = () => {
               min={invoice.total}
               style={{ width: '100%' }}
               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => Number(value?.replace(/,/g, '') || 0) as any}
+              parser={(value) => Number(value?.replace(/,/g, '') || 0) as unknown as number}
               addonAfter="VNĐ"
             />
           </Form.Item>

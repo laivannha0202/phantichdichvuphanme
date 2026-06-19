@@ -20,6 +20,7 @@ import {
   ThunderboltOutlined,
 } from '@ant-design/icons';
 import { kitchenApi } from '../api/kitchen.api';
+import { ensureArray } from '../api/unwrap';
 import type { KitchenItem, KitchenItemStatus } from '../types/sprint5.types';
 
 const { Title, Text } = Typography;
@@ -65,15 +66,18 @@ export function KitchenPage() {
       const response = await kitchenApi.getAllItems({
         status: filterStatus,
       });
-      setItems(response.data);
+      // response is ApiResponse<KitchenItem[]>, response.data = KitchenItem[]
+      setItems(Array.isArray(response.data) ? response.data : []);
     } catch {
       message.error('Không thể tải danh sách món cần chế biến');
+      setItems([]);
     } finally {
       setLoading(false);
     }
   }, [filterStatus]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchItems();
   }, [fetchItems]);
 
@@ -262,7 +266,7 @@ export function KitchenPage() {
       {/* Bảng danh sách */}
       <Table
         columns={columns}
-        dataSource={items}
+        dataSource={ensureArray(items)}
         rowKey="id"
         loading={loading}
         pagination={false}

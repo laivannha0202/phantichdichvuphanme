@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Tabs,
   Table,
@@ -46,9 +46,16 @@ import {
   deleteUser,
 } from '../api/users.api';
 import { getRoles } from '../api/role.api';
+import { ensureArray } from '../api/unwrap';
 
-const { TabPane } = Tabs;
 const { Text } = Typography;
+
+// Kiểu lỗi API từ axios
+type ApiError = {
+  response?: { data?: { message?: string } };
+  errorFields?: unknown;
+  message?: string;
+};
 
 type StaffFormData = {
   full_name: string;
@@ -102,9 +109,11 @@ const StaffUsersPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getStaffList();
-      setStaffList(data);
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Không thể tải danh sách nhân viên');
+      setStaffList(ensureArray(data));
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Không thể tải danh sách nhân viên');
+      setStaffList([]);
     } finally {
       setLoading(false);
     }
@@ -115,9 +124,11 @@ const StaffUsersPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getUsersList();
-      setUsersList(data);
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Không thể tải danh sách tài khoản');
+      setUsersList(ensureArray(data));
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Không thể tải danh sách tài khoản');
+      setUsersList([]);
     } finally {
       setLoading(false);
     }
@@ -126,21 +137,22 @@ const StaffUsersPage: React.FC = () => {
   const loadRoles = async () => {
     try {
       const data = await getRoles();
-      setRoles(data);
+      setRoles(ensureArray(data));
     } catch {
-      // ignore
+      setRoles([]);
     }
   };
 
-  const loadAll = () => {
+  const loadAll = useCallback(() => {
     loadStaff();
     loadUsers();
     loadRoles();
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadAll();
-  }, []);
+  }, [loadAll]);
 
   // ==================== STAFF HANDLERS ====================
 
@@ -157,7 +169,7 @@ const StaffUsersPage: React.FC = () => {
       phone: record.phone,
       position: record.position,
       username: record.user?.username || '',
-      role_id: undefined, // not editable for now
+      role_id: undefined,
     });
     setStaffModalVisible(true);
   };
@@ -188,9 +200,12 @@ const StaffUsersPage: React.FC = () => {
       setStaffModalVisible(false);
       loadStaff();
       loadUsers();
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
       } else {
         message.error('Thao tác thất bại');
       }
@@ -203,8 +218,9 @@ const StaffUsersPage: React.FC = () => {
       message.success('Cập nhật trạng thái thành công');
       loadStaff();
       loadUsers();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Thao tác thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Thao tác thất bại');
     }
   };
 
@@ -214,8 +230,9 @@ const StaffUsersPage: React.FC = () => {
       message.success('Đã xóa nhân viên');
       loadStaff();
       loadUsers();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Xóa thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Xóa thất bại');
     }
   };
 
@@ -240,7 +257,7 @@ const StaffUsersPage: React.FC = () => {
     try {
       const values: UserFormData = await userForm.validateFields();
       if (editingUser) {
-        const updateData: Record<string, any> = { username: values.username };
+        const updateData: Record<string, unknown> = { username: values.username };
         if (values.role_id) updateData.role_id = values.role_id;
         if (values.password) updateData.password = values.password;
         await updateUser(editingUser.id, updateData);
@@ -255,9 +272,12 @@ const StaffUsersPage: React.FC = () => {
       }
       setUserModalVisible(false);
       loadUsers();
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
       } else {
         message.error('Thao tác thất bại');
       }
@@ -269,8 +289,9 @@ const StaffUsersPage: React.FC = () => {
       await updateUserStatus(id, status);
       message.success('Cập nhật trạng thái thành công');
       loadUsers();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Thao tác thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Thao tác thất bại');
     }
   };
 
@@ -283,9 +304,12 @@ const StaffUsersPage: React.FC = () => {
         setPasswordModalVisible(false);
         resetPasswordForm.resetFields();
       }
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
       } else {
         message.error('Đặt lại mật khẩu thất bại');
       }
@@ -297,8 +321,9 @@ const StaffUsersPage: React.FC = () => {
       await deleteUser(id);
       message.success('Đã xóa tài khoản');
       loadUsers();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Xóa thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      message.error(err?.response?.data?.message || 'Xóa thất bại');
     }
   };
 
@@ -421,7 +446,9 @@ const StaffUsersPage: React.FC = () => {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (v: string) => new Date(v).toLocaleDateString('vi-VN'),
+      render: (v: string) => {
+        try { return new Date(v).toLocaleDateString('vi-VN'); } catch { return v; }
+      },
     },
     {
       title: 'Thao tác',
@@ -496,21 +523,14 @@ const StaffUsersPage: React.FC = () => {
     return roles.filter((r) => r.code !== 'QUAN_TRI_HE_THONG');
   }, [roles, roleCode]);
 
-  // ==================== RENDER ====================
+  // ==================== TAB ITEMS (Ant Design 6.x compatible) ====================
 
-  if (!canManage) {
-    return (
-      <div style={{ padding: 24, textAlign: 'center' }}>
-        <Empty description="Bạn không có quyền truy cập trang này" />
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ padding: '24px' }}>
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        {/* ============ STAFF TAB ============ */}
-        <TabPane tab="Nhân viên" key="staff">
+  const tabItems = [
+    {
+      key: 'staff',
+      label: 'Nhân viên',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateStaff}>
@@ -523,15 +543,19 @@ const StaffUsersPage: React.FC = () => {
           </div>
           <Table
             columns={staffColumns}
-            dataSource={staffList}
+            dataSource={ensureArray(staffList)}
             rowKey="id"
             loading={loading}
             locale={{ emptyText: <Empty description="Chưa có nhân viên nào" /> }}
           />
-        </TabPane>
-
-        {/* ============ USERS TAB ============ */}
-        <TabPane tab="Tài khoản" key="users">
+        </>
+      ),
+    },
+    {
+      key: 'users',
+      label: 'Tài khoản',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateUser}>
@@ -544,15 +568,19 @@ const StaffUsersPage: React.FC = () => {
           </div>
           <Table
             columns={userColumns}
-            dataSource={usersList}
+            dataSource={ensureArray(usersList)}
             rowKey="id"
             loading={loading}
             locale={{ emptyText: <Empty description="Chưa có tài khoản nào" /> }}
           />
-        </TabPane>
-
-        {/* ============ ROLES TAB ============ */}
-        <TabPane tab="Vai trò" key="roles">
+        </>
+      ),
+    },
+    {
+      key: 'roles',
+      label: 'Vai trò',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button icon={<ReloadOutlined />} onClick={loadRoles}>
@@ -562,13 +590,29 @@ const StaffUsersPage: React.FC = () => {
           </div>
           <Table
             columns={roleColumns}
-            dataSource={roles}
+            dataSource={ensureArray(roles)}
             rowKey="id"
             loading={loading}
             locale={{ emptyText: <Empty description="Chưa có vai trò nào" /> }}
           />
-        </TabPane>
-      </Tabs>
+        </>
+      ),
+    },
+  ];
+
+  // ==================== RENDER ====================
+
+  if (!canManage) {
+    return (
+      <div style={{ padding: 24, textAlign: 'center' }}>
+        <Empty description="Bạn không có quyền truy cập trang này" />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '24px' }}>
+      <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
 
       {/* ==================== STAFF MODAL ==================== */}
       <Modal
@@ -579,7 +623,7 @@ const StaffUsersPage: React.FC = () => {
         width={560}
         destroyOnClose
       >
-        <Form form={staffForm} layout="vertical">
+        <Form form={staffForm} layout="vertical" preserve={false}>
           <Form.Item
             name="full_name"
             label="Họ tên"
@@ -642,7 +686,7 @@ const StaffUsersPage: React.FC = () => {
         width={480}
         destroyOnClose
       >
-        <Form form={userForm} layout="vertical">
+        <Form form={userForm} layout="vertical" preserve={false}>
           <Form.Item
             name="username"
             label="Tên đăng nhập"
@@ -692,7 +736,7 @@ const StaffUsersPage: React.FC = () => {
         width={400}
         destroyOnClose
       >
-        <Form form={resetPasswordForm} layout="vertical">
+        <Form form={resetPasswordForm} layout="vertical" preserve={false}>
           <Form.Item
             name="new_password"
             label="Mật khẩu mới"

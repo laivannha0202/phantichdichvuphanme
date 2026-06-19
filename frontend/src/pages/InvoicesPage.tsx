@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Tag, Space, Card, Tabs, message, Modal } from 'antd';
 import { EyeOutlined, CreditCardOutlined, StopOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { getInvoices, cancelInvoice } from '../api/invoices.api';
+import { ensureArray } from '../api/unwrap';
 import type { Invoice, InvoiceStatus } from '../types/sprint4.types';
 import dayjs from 'dayjs';
-
-const { TabPane } = Tabs;
 
 const statusColors: Record<InvoiceStatus, string> = {
   CHUA_THANH_TOAN: 'orange',
@@ -26,21 +25,22 @@ const InvoicesPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
-  const fetchInvoices = async (status?: string) => {
+  const fetchInvoices = useCallback(async (status?: string) => {
     setLoading(true);
     try {
       const data = await getInvoices(status);
       setInvoices(data);
-    } catch (error) {
+    } catch {
       message.error('Không thể tải danh sách hóa đơn');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchInvoices(activeTab === 'all' ? undefined : activeTab);
-  }, [activeTab]);
+  }, [activeTab, fetchInvoices]);
 
   const handleCancel = async (id: number) => {
     Modal.confirm({
@@ -51,7 +51,7 @@ const InvoicesPage: React.FC = () => {
           await cancelInvoice(id, { reason: 'Hủy theo yêu cầu' });
           message.success('Hủy hóa đơn thành công');
           fetchInvoices(activeTab === 'all' ? undefined : activeTab);
-        } catch (error) {
+        } catch {
           message.error('Không thể hủy hóa đơn');
         }
       },
@@ -97,7 +97,7 @@ const InvoicesPage: React.FC = () => {
     {
       title: 'Thao tác',
       key: 'actions',
-      render: (_: any, record: Invoice) => (
+      render: (_: unknown, record: Invoice) => (
         <Space>
           <Button
             type="link"
@@ -132,15 +132,19 @@ const InvoicesPage: React.FC = () => {
 
   return (
     <Card title="Quản lý hóa đơn">
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane tab="Tất cả" key="all" />
-        <TabPane tab="Chưa thanh toán" key="CHUA_THANH_TOAN" />
-        <TabPane tab="Đã thanh toán" key="DA_THANH_TOAN" />
-        <TabPane tab="Đã hủy" key="DA_HUY" />
-      </Tabs>
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        items={[
+          { label: 'Tất cả', key: 'all' },
+          { label: 'Chưa thanh toán', key: 'CHUA_THANH_TOAN' },
+          { label: 'Đã thanh toán', key: 'DA_THANH_TOAN' },
+          { label: 'Đã hủy', key: 'DA_HUY' },
+        ]}
+      />
       <Table
         columns={columns}
-        dataSource={invoices}
+        dataSource={ensureArray(invoices)}
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 10 }}

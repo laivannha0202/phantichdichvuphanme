@@ -89,6 +89,7 @@ export function OrderDetailPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrder();
     fetchMenuItems();
   }, [fetchOrder]);

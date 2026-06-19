@@ -84,6 +84,7 @@ export function AuditLogsPage() {
   }, [filters]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchLogs();
   }, [fetchLogs]);
 
@@ -291,7 +292,7 @@ export function AuditLogsPage() {
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} / ${total} bản ghi`,
         }}
-        onChange={handleTableChange as any}
+        onChange={(pag) => handleTableChange({ current: pag.current ?? 1, pageSize: pag.pageSize ?? 20 })}
         scroll={{ x: 1200 }}
         size="middle"
         locale={{

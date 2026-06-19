@@ -13,19 +13,21 @@ chỉ cần UI có vùng ảnh và xử lý placeholder đúng cách.
 
 ---
 
-## 2. Trạng thái hiện tại (Sprint 2)
+## 2. Trạng thái hiện tại
 
 ### 2.1 `menu_items.image_url`
 
 - Kiểu: `VARCHAR(500)` hoặc `TEXT`
 - **Nullable**: Có thể NULL
 - **Sprint 2**: Không upload ảnh thật, để NULL hoặc nhập URL mẫu
+- **hiện tại**: Upload ảnh thật đã implement — `POST /api/uploads/menu-items` (multipart/form-data, field `file`), lưu vào `backend/uploads/menu-items/`
 
-### 2.2 Upload ảnh là Optional/Future
+### 2.2 Upload ảnh — Đã implement ✅
 
-- Sprint 2 **KHÔNG** implement upload ảnh
-- Sprint 2 **KHÔNG** cần `multer` hay storage config
-- Upload ảnh sẽ làm ở sprint sau (nếu được yêu cầu)
+- Backend: `UploadsController` dùng `FileInterceptor('file')` + `multer.diskStorage`
+- Frontend: `MenuItemsPage` upload qua `formData.append('file', file)`
+- Storage: `backend/uploads/menu-items/`, static serve tại `/uploads`
+- `image_url` trong DB lưu relative path (ví dụ: `1234567890-image.png`)
 
 ---
 

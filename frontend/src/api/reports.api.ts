@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { unwrapApiData } from './unwrap';
 import type {
   RevenueSummary,
   DailyRevenueResponse,
@@ -16,7 +17,7 @@ export const reportsApi = {
     if (toDate) params.append('toDate', toDate);
     const query = params.toString() ? `?${params.toString()}` : '';
     const response = await apiClient.get(`/reports/revenue/summary${query}`);
-    return response.data.data;
+    return unwrapApiData<RevenueSummary>(response);
   },
 
   /**
@@ -28,7 +29,7 @@ export const reportsApi = {
     if (toDate) params.append('toDate', toDate);
     const query = params.toString() ? `?${params.toString()}` : '';
     const response = await apiClient.get(`/reports/revenue/daily${query}`);
-    return response.data.data;
+    return unwrapApiData<DailyRevenueResponse>(response);
   },
 
   /**
@@ -41,7 +42,7 @@ export const reportsApi = {
     if (limit) params.append('limit', limit.toString());
     const query = params.toString() ? `?${params.toString()}` : '';
     const response = await apiClient.get(`/reports/revenue/top-items${query}`);
-    return response.data.data;
+    return unwrapApiData<TopItemsResponse>(response);
   },
 
   /**
@@ -56,6 +57,6 @@ export const reportsApi = {
     if (toDate) params.append('toDate', toDate);
     const query = params.toString() ? `?${params.toString()}` : '';
     const response = await apiClient.get(`/reports/revenue/payment-methods${query}`);
-    return response.data.data;
+    return unwrapApiData<PaymentMethodsResponse>(response);
   },
 };

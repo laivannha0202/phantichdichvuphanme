@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Tabs,
   Table,
@@ -43,8 +43,14 @@ import {
   getLowStock,
   getSummary,
 } from '../api/inventory.api';
+import { ensureArray } from '../api/unwrap';
 
-const { TabPane } = Tabs;
+// Kiểu lỗi API từ axios
+type ApiError = {
+  response?: { data?: { message?: string } };
+  errorFields?: unknown;
+  message?: string;
+};
 
 const InventoryPage: React.FC = () => {
   // State
@@ -76,9 +82,10 @@ const InventoryPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getSuppliers();
-      setSuppliers(data);
-    } catch (error) {
+      setSuppliers(ensureArray(data));
+    } catch {
       message.error('Không thể tải danh sách nhà cung cấp');
+      setSuppliers([]);
     } finally {
       setLoading(false);
     }
@@ -88,9 +95,10 @@ const InventoryPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getIngredients();
-      setIngredients(data);
-    } catch (error) {
+      setIngredients(ensureArray(data));
+    } catch {
       message.error('Không thể tải danh sách nguyên liệu');
+      setIngredients([]);
     } finally {
       setLoading(false);
     }
@@ -100,9 +108,10 @@ const InventoryPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getTransactions();
-      setTransactions(data);
-    } catch (error) {
+      setTransactions(ensureArray(data));
+    } catch {
       message.error('Không thể tải lịch sử giao dịch');
+      setTransactions([]);
     } finally {
       setLoading(false);
     }
@@ -112,9 +121,10 @@ const InventoryPage: React.FC = () => {
     try {
       setLoading(true);
       const data = await getLowStock();
-      setLowStock(data);
-    } catch (error) {
+      setLowStock(ensureArray(data));
+    } catch {
       message.error('Không thể tải danh sách cảnh báo');
+      setLowStock([]);
     } finally {
       setLoading(false);
     }
@@ -124,22 +134,23 @@ const InventoryPage: React.FC = () => {
     try {
       const data = await getSummary();
       setSummary(data);
-    } catch (error) {
+    } catch {
       message.error('Không thể tải tổng quan kho');
     }
   };
 
-  const loadAll = () => {
+  const loadAll = useCallback(() => {
     loadSuppliers();
     loadIngredients();
     loadTransactions();
     loadLowStock();
     loadSummary();
-  };
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadAll();
-  }, []);
+  }, [loadAll]);
 
   // ==================== SUPPLIER HANDLERS ====================
 
@@ -167,8 +178,15 @@ const InventoryPage: React.FC = () => {
       }
       setSupplierModalVisible(false);
       loadSuppliers();
-    } catch (error) {
-      message.error('Thao tác thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
+      } else {
+        message.error('Thao tác thất bại');
+      }
     }
   };
 
@@ -199,8 +217,15 @@ const InventoryPage: React.FC = () => {
       setIngredientModalVisible(false);
       loadIngredients();
       loadSummary();
-    } catch (error) {
-      message.error('Thao tác thất bại');
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
+      } else {
+        message.error('Thao tác thất bại');
+      }
     }
   };
 
@@ -217,9 +242,12 @@ const InventoryPage: React.FC = () => {
       loadTransactions();
       loadSummary();
       loadLowStock();
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
       } else {
         message.error('Nhập kho thất bại');
       }
@@ -237,9 +265,12 @@ const InventoryPage: React.FC = () => {
       loadTransactions();
       loadSummary();
       loadLowStock();
-    } catch (error: any) {
-      if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      if (err?.response?.data?.message) {
+        message.error(err.response.data.message);
+      } else if (err?.errorFields) {
+        // Lỗi validation form
       } else {
         message.error('Xuất kho thất bại');
       }
@@ -283,13 +314,13 @@ const InventoryPage: React.FC = () => {
       title: 'Tồn kho',
       dataIndex: 'currentStock',
       key: 'currentStock',
-      render: (value: number) => value.toLocaleString('vi-VN'),
+      render: (value: number) => value?.toLocaleString('vi-VN') ?? '0',
     },
     {
       title: 'Tồn tối thiểu',
       dataIndex: 'minStock',
       key: 'minStock',
-      render: (value: number) => value.toLocaleString('vi-VN'),
+      render: (value: number) => value?.toLocaleString('vi-VN') ?? '0',
     },
     {
       title: 'Trạng thái',
@@ -308,7 +339,7 @@ const InventoryPage: React.FC = () => {
           HET_HANG: 'Hết hàng',
           NGUNG_SU_DUNG: 'Ngừng sử dụng',
         };
-        return <Tag color={colorMap[status]}>{labelMap[status]}</Tag>;
+        return <Tag color={colorMap[status]}>{labelMap[status] || status}</Tag>;
       },
     },
     { title: 'Ghi chú', dataIndex: 'note', key: 'note', ellipsis: true },
@@ -345,14 +376,14 @@ const InventoryPage: React.FC = () => {
           XUAT_KHO: 'Xuất kho',
           DIEU_CHINH: 'Điều chỉnh',
         };
-        return <Tag color={colorMap[type]}>{labelMap[type]}</Tag>;
+        return <Tag color={colorMap[type]}>{labelMap[type] || type}</Tag>;
       },
     },
     {
       title: 'Số lượng',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (value: number) => value.toLocaleString('vi-VN'),
+      render: (value: number) => value?.toLocaleString('vi-VN') ?? '0',
     },
     {
       title: 'Đơn giá',
@@ -371,7 +402,9 @@ const InventoryPage: React.FC = () => {
       title: 'Thời gian',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (value: string) => new Date(value).toLocaleString('vi-VN'),
+      render: (value: string) => {
+        try { return new Date(value).toLocaleString('vi-VN'); } catch { return value; }
+      },
     },
   ];
 
@@ -385,7 +418,7 @@ const InventoryPage: React.FC = () => {
       key: 'currentStock',
       render: (value: number) => (
         <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>
-          {value.toLocaleString('vi-VN')}
+          {value?.toLocaleString('vi-VN') ?? '0'}
         </span>
       ),
     },
@@ -393,7 +426,7 @@ const InventoryPage: React.FC = () => {
       title: 'Tồn tối thiểu',
       dataIndex: 'minStock',
       key: 'minStock',
-      render: (value: number) => value.toLocaleString('vi-VN'),
+      render: (value: number) => value?.toLocaleString('vi-VN') ?? '0',
     },
     {
       title: 'Trạng thái',
@@ -407,48 +440,14 @@ const InventoryPage: React.FC = () => {
     },
   ];
 
-  // ==================== RENDER ====================
+  // ==================== TAB ITEMS (Ant Design 6.x compatible) ====================
 
-  return (
-    <div style={{ padding: '24px' }}>
-      {/* Summary Cards */}
-      {summary && (
-        <Row gutter={16} style={{ marginBottom: 24 }}>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Tổng nguyên liệu" value={summary.totalIngredients} />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="Cảnh báo sắp hết"
-                value={summary.lowStockCount}
-                valueStyle={{ color: summary.lowStockCount > 0 ? '#ff4d4f' : '#3f8600' }}
-              />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic title="Tổng giao dịch" value={summary.totalTransactions} />
-            </Card>
-          </Col>
-          <Col span={6}>
-            <Card>
-              <Statistic
-                title="Giá trị tồn kho"
-                value={summary.totalStockValue}
-                suffix="đ"
-                valueStyle={{ color: '#1890ff' }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      )}
-
-      {/* Tabs */}
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane tab="Nguyên liệu" key="ingredients">
+  const tabItems = [
+    {
+      key: 'ingredients',
+      label: 'Nguyên liệu',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateIngredient}>
@@ -461,13 +460,18 @@ const InventoryPage: React.FC = () => {
           </div>
           <Table
             columns={ingredientColumns}
-            dataSource={ingredients}
+            dataSource={ensureArray(ingredients)}
             rowKey="id"
             loading={loading}
           />
-        </TabPane>
-
-        <TabPane tab="Nhà cung cấp" key="suppliers">
+        </>
+      ),
+    },
+    {
+      key: 'suppliers',
+      label: 'Nhà cung cấp',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateSupplier}>
@@ -480,13 +484,18 @@ const InventoryPage: React.FC = () => {
           </div>
           <Table
             columns={supplierColumns}
-            dataSource={suppliers}
+            dataSource={ensureArray(suppliers)}
             rowKey="id"
             loading={loading}
           />
-        </TabPane>
-
-        <TabPane tab="Nhập kho" key="import">
+        </>
+      ),
+    },
+    {
+      key: 'import',
+      label: 'Nhập kho',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setImportModalVisible(true)}>
@@ -499,13 +508,18 @@ const InventoryPage: React.FC = () => {
           </div>
           <Table
             columns={transactionColumns.filter((col) => col.key !== 'actions')}
-            dataSource={transactions.filter((t) => t.type === 'NHAP_KHO')}
+            dataSource={ensureArray(transactions.filter((t) => t.type === 'NHAP_KHO'))}
             rowKey="id"
             loading={loading}
           />
-        </TabPane>
-
-        <TabPane tab="Xuất kho" key="export">
+        </>
+      ),
+    },
+    {
+      key: 'export',
+      label: 'Xuất kho',
+      children: (
+        <>
           <div style={{ marginBottom: 16 }}>
             <Space>
               <Button type="primary" danger icon={<PlusOutlined />} onClick={() => setExportModalVisible(true)}>
@@ -518,30 +532,72 @@ const InventoryPage: React.FC = () => {
           </div>
           <Table
             columns={transactionColumns.filter((col) => col.key !== 'actions')}
-            dataSource={transactions.filter((t) => t.type === 'XUAT_KHO')}
+            dataSource={ensureArray(transactions.filter((t) => t.type === 'XUAT_KHO'))}
             rowKey="id"
             loading={loading}
           />
-        </TabPane>
+        </>
+      ),
+    },
+    {
+      key: 'lowstock',
+      label: (
+        <span>
+          <WarningOutlined />
+          {' '}Cảnh báo sắp hết ({lowStock.length})
+        </span>
+      ),
+      children: (
+        <Table
+          columns={lowStockColumns}
+          dataSource={ensureArray(lowStock)}
+          rowKey="id"
+          loading={loading}
+          locale={{ emptyText: <Empty description="Không có nguyên liệu sắp hết" /> }}
+        />
+      ),
+    },
+  ];
 
-        <TabPane
-          tab={
-            <span>
-              <WarningOutlined />
-              Cảnh báo sắp hết ({lowStock.length})
-            </span>
-          }
-          key="lowstock"
-        >
-          <Table
-            columns={lowStockColumns}
-            dataSource={lowStock}
-            rowKey="id"
-            loading={loading}
-            locale={{ emptyText: <Empty description="Không có nguyên liệu sắp hết" /> }}
-          />
-        </TabPane>
-      </Tabs>
+  // ==================== RENDER ====================
+
+  return (
+    <div style={{ padding: '24px' }}>
+      {/* Summary Cards */}
+      <Row gutter={16} style={{ marginBottom: 24 }}>
+        <Col span={6}>
+          <Card>
+            <Statistic title="Tổng nguyên liệu" value={summary?.totalIngredients ?? 0} />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              title="Cảnh báo sắp hết"
+              value={summary?.lowStockCount ?? 0}
+              valueStyle={{ color: (summary?.lowStockCount ?? 0) > 0 ? '#ff4d4f' : '#3f8600' }}
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic title="Tổng giao dịch" value={summary?.totalTransactions ?? 0} />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              title="Tổng lượng tồn ước tính"
+              value={summary?.totalStockValue ?? 0}
+              suffix="đ"
+              valueStyle={{ color: '#1890ff' }}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Tabs - Ant Design 6.x uses items prop */}
+      <Tabs activeKey={activeTab} onChange={setActiveTab} items={tabItems} />
 
       {/* Supplier Modal */}
       <Modal
@@ -549,8 +605,9 @@ const InventoryPage: React.FC = () => {
         open={supplierModalVisible}
         onOk={handleSupplierSubmit}
         onCancel={() => setSupplierModalVisible(false)}
+        destroyOnClose
       >
-        <Form form={supplierForm} layout="vertical">
+        <Form form={supplierForm} layout="vertical" preserve={false}>
           {!editingSupplier && (
             <Form.Item
               name="supplierCode"
@@ -588,8 +645,9 @@ const InventoryPage: React.FC = () => {
         open={ingredientModalVisible}
         onOk={handleIngredientSubmit}
         onCancel={() => setIngredientModalVisible(false)}
+        destroyOnClose
       >
-        <Form form={ingredientForm} layout="vertical">
+        <Form form={ingredientForm} layout="vertical" preserve={false}>
           {!editingIngredient && (
             <Form.Item
               name="ingredientCode"
@@ -633,15 +691,16 @@ const InventoryPage: React.FC = () => {
         open={importModalVisible}
         onOk={handleImport}
         onCancel={() => setImportModalVisible(false)}
+        destroyOnClose
       >
-        <Form form={importForm} layout="vertical">
+        <Form form={importForm} layout="vertical" preserve={false}>
           <Form.Item
             name="ingredientId"
             label="Nguyên liệu"
             rules={[{ required: true, message: 'Vui lòng chọn nguyên liệu' }]}
           >
             <Select placeholder="Chọn nguyên liệu">
-              {ingredients.map((item) => (
+              {ensureArray(ingredients).map((item) => (
                 <Select.Option key={item.id} value={item.id}>
                   {item.name} ({item.unit})
                 </Select.Option>
@@ -650,7 +709,7 @@ const InventoryPage: React.FC = () => {
           </Form.Item>
           <Form.Item name="supplierId" label="Nhà cung cấp">
             <Select placeholder="Chọn nhà cung cấp (tùy chọn)" allowClear>
-              {suppliers
+              {ensureArray(suppliers)
                 .filter((s) => s.status === 'DANG_HOP_TAC')
                 .map((item) => (
                   <Select.Option key={item.id} value={item.id}>
@@ -662,11 +721,20 @@ const InventoryPage: React.FC = () => {
           <Form.Item
             name="quantity"
             label="Số lượng"
-            rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập số lượng' },
+              { type: 'number', min: 0.001, message: 'Số lượng phải lớn hơn 0' },
+            ]}
           >
             <InputNumber min={0.001} style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item name="unitPrice" label="Đơn giá">
+          <Form.Item
+            name="unitPrice"
+            label="Đơn giá"
+            rules={[
+              { type: 'number', min: 0, message: 'Đơn giá phải lớn hơn hoặc bằng 0' },
+            ]}
+          >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="note" label="Ghi chú">
@@ -681,15 +749,16 @@ const InventoryPage: React.FC = () => {
         open={exportModalVisible}
         onOk={handleExport}
         onCancel={() => setExportModalVisible(false)}
+        destroyOnClose
       >
-        <Form form={exportForm} layout="vertical">
+        <Form form={exportForm} layout="vertical" preserve={false}>
           <Form.Item
             name="ingredientId"
             label="Nguyên liệu"
             rules={[{ required: true, message: 'Vui lòng chọn nguyên liệu' }]}
           >
             <Select placeholder="Chọn nguyên liệu">
-              {ingredients
+              {ensureArray(ingredients)
                 .filter((item) => item.currentStock > 0)
                 .map((item) => (
                   <Select.Option key={item.id} value={item.id}>
@@ -701,7 +770,10 @@ const InventoryPage: React.FC = () => {
           <Form.Item
             name="quantity"
             label="Số lượng"
-            rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập số lượng' },
+              { type: 'number', min: 0.001, message: 'Số lượng phải lớn hơn 0' },
+            ]}
           >
             <InputNumber min={0.001} style={{ width: '100%' }} />
           </Form.Item>

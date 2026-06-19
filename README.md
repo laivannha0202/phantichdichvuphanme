@@ -91,16 +91,23 @@ cd backend && npm install
 cd ../frontend && npm install
 ```
 
-### Bước 5: Chạy Migration
+### Bước 5: Tạo thư mục uploads
+
+```bash
+mkdir -p backend/uploads/menu-items
+touch backend/uploads/menu-items/.gitkeep
+```
+
+### Bước 6: Chạy Migration
 
 ```bash
 cd backend
 npm run migration:run
 ```
 
-Tạo 3 bảng: `roles`, `staff`, `users`.
+Tạo các bảng: `roles`, `staff`, `users`, và các bảng nghiệp vụ theo từng sprint.
 
-### Bước 6: Seed dữ liệu
+### Bước 7: Seed dữ liệu
 
 ```bash
 npm run seed:run
@@ -110,7 +117,7 @@ Seed:
 - 6 roles (QUAN_TRI_HE_THONG, QUAN_LY, PHUC_VU, THU_NGAN, BEP, KHO)
 - Tài khoản admin dev
 
-### Bước 7: Chạy Backend
+### Bước 8: Chạy Backend
 
 ```bash
 npm run start:dev
@@ -118,7 +125,7 @@ npm run start:dev
 
 Backend chạy tại `http://localhost:5011/api`.
 
-### Bước 8: Chạy Frontend
+### Bước 9: Chạy Frontend
 
 ```bash
 cd ../frontend
@@ -127,7 +134,7 @@ npm run dev
 
 Frontend chạy tại `http://localhost:5173`.
 
-### Bước 9: Test
+### Bước 10: Test
 
 1. Mở `http://localhost:5173/login`
 2. Đăng nhập:
@@ -203,6 +210,24 @@ npm run seed:run
 
 ---
 
+## Main Features
+
+| Tính năng | Route | Mô tả |
+|-----------|-------|-------|
+| Dashboard | `/` | Tổng quan nhà hàng: bàn, đơn hàng, bếp, kho, doanh thu, biểu đồ 7 ngày |
+| Quản lý bàn | `/tables` | CRUD bàn, trạng thái, khu vực |
+| Thực đơn | `/menu/items`, `/menu/categories` | Quản lý món ăn, danh mục, upload ảnh |
+| Đơn hàng | `/orders` | Tạo đơn, gọi món, chi tiết |
+| Bếp | `/kitchen` | KDS — chế biến món theo trạng thái |
+| Hóa đơn | `/invoices` | Thanh toán, hủy hóa đơn |
+| Đặt bàn | `/reservations` | Đặt trước, xác nhận, check-in |
+| Kho | `/inventory` | Nguyên liệu, nhà cung cấp, nhập/xuất kho, cảnh báo sắp hết |
+| Nhân viên | `/staff-users` | Nhân viên, tài khoản, vai trò, phân quyền |
+| Báo cáo | `/reports/revenue` | Doanh thu theo ngày, top món, phương thức thanh toán |
+| Audit log | `/audit-logs` | Nhật ký hoạt động hệ thống |
+
+---
+
 ## API Endpoints
 
 > Danh sách endpoints chính. Xem chi tiết tại `docs/features/` cho từng Sprint.
@@ -224,6 +249,13 @@ npm run seed:run
 | GET | `/api/orders` | Bearer | Danh sách đơn hàng |
 | POST | `/api/payments` | Bearer | Thanh toán |
 | GET | `/api/reports/revenue` | Bearer | Báo cáo doanh thu |
+| POST | `/api/uploads/menu-items` | Bearer + Role | Upload ảnh món ăn |
+
+> **API response format:** Backend dùng `TransformInterceptor`, mọi response đều wrap dạng:
+> ```json
+> { "data": T, "message": "string", "statusCode": 200 }
+> ```
+> Frontend dùng `unwrapApiData()` để lấy dữ liệu nghiệp vụ thật từ `response.data.data`.
 
 ---
 

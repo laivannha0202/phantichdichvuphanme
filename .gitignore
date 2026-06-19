@@ -34,6 +34,10 @@ debug*
 test-output*
 *.tar.gz
 
+# Uploads (user-generated content)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
 # OpenCode and tooling
 .opencode/
 .agents/

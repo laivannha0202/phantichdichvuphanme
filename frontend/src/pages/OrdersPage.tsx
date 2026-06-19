@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Table,
@@ -21,6 +21,7 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import { ordersApi } from '../api/orders.api';
+import { ensureArray } from '../api/unwrap';
 import type { Order, OrderStatus } from '../types/sprint3.types';
 
 const { Title, Text } = Typography;
@@ -44,21 +45,24 @@ export function OrdersPage() {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [form] = Form.useForm();
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const response = await ordersApi.getAll({ status: filterStatus });
-      setOrders(response.data);
+      // response is ApiResponse<Order[]>, response.data = Order[]
+      setOrders(Array.isArray(response.data) ? response.data : []);
     } catch {
       message.error('Không thể tải danh sách đơn hàng');
+      setOrders([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrders();
-  }, [filterStatus]);
+  }, [fetchOrders]);
 
   const handleCancelOrder = async (id: number) => {
     try {
@@ -195,7 +199,7 @@ export function OrdersPage() {
 
       <Table
         columns={columns}
-        dataSource={orders}
+        dataSource={ensureArray(orders)}
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 10 }}
