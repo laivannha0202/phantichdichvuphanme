@@ -111,7 +111,7 @@ Danh sách module ở mức **trách nhiệm**, không phải cây thư mục.
 ### 3.2 Ghi chú về module
 
 - **OrdersModule** quản lý cả `orders` và `order_items`. Lịch sử trạng thái món trong MVP ghi nhận qua `audit_logs`. Nếu sau này cần phân tích thời gian bếp chi tiết, có thể tách bảng trạng thái riêng ở giai đoạn sau.
-- **InventoryModule** quản lý cả `inventory_items` và `inventory_transactions`.
+- **InventoryModule** quản lý cả `suppliers`, `ingredients` và `inventory_transactions`.
 - **MenuModule** gộp `menu_categories` và `menu_items`.
 - **StaffModule** quản lý cả `roles`, `users` và `staff`.
 - **KitchenModule** chỉ đọc danh sách món và cập nhật trạng thái — không tạo/xóa đơn.

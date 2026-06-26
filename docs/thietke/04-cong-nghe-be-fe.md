@@ -152,7 +152,8 @@ Sprint 1 không tạo toàn bộ 15 bảng MVP. Sprint 1 chỉ cần **3 bảng 
 - `order_items`
 - `invoices`
 - `payments`
-- `inventory_items`
+- `suppliers`
+- `ingredients`
 - `inventory_transactions`
 - `audit_logs`
 
